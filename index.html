@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Estimation Tool</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Login Screen -->
+        <div id="login-screen" class="screen active">
+            <div class="login-container">
+                <h1>Project Estimation Tool</h1>
+                <div class="login-options">
+                    <div class="user-card" onclick="login('estimator')">
+                        <h3>Estimator</h3>
+                        <p>Create and manage project estimations</p>
+                        <button class="login-btn">Login as Estimator</button>
+                    </div>
+                    <div class="user-card" onclick="login('admin')">
+                        <h3>Admin</h3>
+                        <p>Manage story types and system configuration</p>
+                        <button class="login-btn">Login as Admin</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Application -->
+        <div id="main-screen" class="screen">
+            <header>
+                <h1>Project Estimation Tool</h1>
+                <div class="user-info">
+                    <span id="current-user"></span>
+                    <button onclick="logout()" class="logout-btn">Logout</button>
+                </div>
+            </header>
+
+            <nav class="tab-navigation">
+                <button class="tab-btn active" onclick="showTab('estimation-matrix')">Estimation Matrix</button>
+                <button class="tab-btn" onclick="showTab('projects')">Projects</button>
+                <button class="tab-btn" onclick="showTab('project-plan')">Project Plan</button>
+            </nav>
+
+            <!-- Estimation Matrix Tab -->
+            <div id="estimation-matrix" class="tab-content active">
+                <div class="section-header">
+                    <h2>Estimation Matrix</h2>
+                    <button onclick="addStoryType()" class="add-btn">Add Story Type</button>
+                </div>
+                <div id="story-types-container">
+                    <!-- Story types will be dynamically generated -->
+                </div>
+            </div>
+
+            <!-- Projects Tab -->
+            <div id="projects" class="tab-content">
+                <div class="section-header">
+                    <h2>Projects</h2>
+                    <button onclick="createProject()" class="add-btn">New Project</button>
+                </div>
+                <div id="projects-list">
+                    <!-- Projects will be listed here -->
+                </div>
+                <div id="project-form" class="project-form hidden">
+                    <h3>Create New Project</h3>
+                    <input type="text" id="project-name" placeholder="Project Name" required>
+                    <div id="project-line-items">
+                        <!-- Line items will be added here -->
+                    </div>
+                    <button onclick="addLineItem()" class="add-btn">Add Line Item</button>
+                    <div class="form-actions">
+                        <button onclick="saveProject()" class="save-btn">Save Project</button>
+                        <button onclick="cancelProject()" class="cancel-btn">Cancel</button>
+                    </div>
+                    <div class="project-total">
+                        <h3>Total Estimate: <span id="total-estimate">0</span> hours</h3>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project Plan Tab -->
+            <div id="project-plan" class="tab-content">
+                <div class="section-header">
+                    <h2>Project Plan</h2>
+                    <select id="project-selector" onchange="loadProjectPlan()">
+                        <option value="">Select a project</option>
+                    </select>
+                </div>
+                <div id="project-plan-content">
+                    <!-- Project plan details will be shown here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for editing story types -->
+    <div id="story-type-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">Add Story Type</h3>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="story-type-name" placeholder="Story Type Name" required>
+                <div class="subtasks-section">
+                    <h4>Subtasks</h4>
+                    <div id="subtasks-container">
+                        <!-- Subtasks will be added here -->
+                    </div>
+                    <button onclick="addSubtask()" class="add-btn">Add Subtask</button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button onclick="saveStoryType()" class="save-btn">Save</button>
+                <button onclick="closeModal()" class="cancel-btn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
