@@ -1,7 +1,7 @@
 class EstimationTool {
     constructor() {
         this.currentUser = null;
-        this.currentStoryTypeId = null;
+        this.currentCategoryId = null;
         this.currentProjectId = null;
         this.initializeData();
         this.bindEvents();
@@ -10,39 +10,158 @@ class EstimationTool {
     initializeData() {
         if (!localStorage.getItem('estimationTool')) {
             const initialData = {
-                storyTypes: {
-                    'st1': {
-                        id: 'st1',
-                        name: 'Feature Development',
-                        subtasks: [
-                            { name: 'Analysis', hours: 2 },
-                            { name: 'Design', hours: 4 },
-                            { name: 'Development', hours: 8 },
-                            { name: 'Testing', hours: 4 },
-                            { name: 'Code Review', hours: 2 }
+                categories: {
+                    'cat1': {
+                        id: 'cat1',
+                        name: 'Development',
+                        steps: [
+                            {
+                                name: 'Analysis',
+                                complexity: {
+                                    'XS': 1,
+                                    'S': 2,
+                                    'M': 4,
+                                    'L': 8,
+                                    'XL': 16
+                                }
+                            },
+                            {
+                                name: 'Design',
+                                complexity: {
+                                    'XS': 2,
+                                    'S': 4,
+                                    'M': 8,
+                                    'L': 16,
+                                    'XL': 24
+                                }
+                            },
+                            {
+                                name: 'Development',
+                                complexity: {
+                                    'XS': 4,
+                                    'S': 8,
+                                    'M': 16,
+                                    'L': 32,
+                                    'XL': 48
+                                }
+                            },
+                            {
+                                name: 'Testing',
+                                complexity: {
+                                    'XS': 2,
+                                    'S': 4,
+                                    'M': 8,
+                                    'L': 12,
+                                    'XL': 16
+                                }
+                            },
+                            {
+                                name: 'Code Review',
+                                complexity: {
+                                    'XS': 1,
+                                    'S': 2,
+                                    'M': 3,
+                                    'L': 4,
+                                    'XL': 6
+                                }
+                            }
                         ]
                     },
-                    'st2': {
-                        id: 'st2',
+                    'cat2': {
+                        id: 'cat2',
                         name: 'Bug Fix',
-                        subtasks: [
-                            { name: 'Investigation', hours: 1 },
-                            { name: 'Fix Implementation', hours: 2 },
-                            { name: 'Testing', hours: 1 },
-                            { name: 'Code Review', hours: 0.5 }
+                        steps: [
+                            {
+                                name: 'Investigation',
+                                complexity: {
+                                    'XS': 0.5,
+                                    'S': 1,
+                                    'M': 2,
+                                    'L': 4,
+                                    'XL': 8
+                                }
+                            },
+                            {
+                                name: 'Implementation',
+                                complexity: {
+                                    'XS': 1,
+                                    'S': 2,
+                                    'M': 4,
+                                    'L': 8,
+                                    'XL': 12
+                                }
+                            },
+                            {
+                                name: 'Testing',
+                                complexity: {
+                                    'XS': 0.5,
+                                    'S': 1,
+                                    'M': 2,
+                                    'L': 4,
+                                    'XL': 6
+                                }
+                            },
+                            {
+                                name: 'Code Review',
+                                complexity: {
+                                    'XS': 0.25,
+                                    'S': 0.5,
+                                    'M': 1,
+                                    'L': 2,
+                                    'XL': 3
+                                }
+                            }
                         ]
                     },
-                    'st3': {
-                        id: 'st3',
+                    'cat3': {
+                        id: 'cat3',
                         name: 'Integration',
-                        subtasks: [
-                            { name: 'API Design', hours: 3 },
-                            { name: 'Implementation', hours: 6 },
-                            { name: 'Testing', hours: 4 },
-                            { name: 'Documentation', hours: 2 }
+                        steps: [
+                            {
+                                name: 'API Design',
+                                complexity: {
+                                    'XS': 2,
+                                    'S': 4,
+                                    'M': 8,
+                                    'L': 12,
+                                    'XL': 16
+                                }
+                            },
+                            {
+                                name: 'Implementation',
+                                complexity: {
+                                    'XS': 4,
+                                    'S': 8,
+                                    'M': 16,
+                                    'L': 24,
+                                    'XL': 32
+                                }
+                            },
+                            {
+                                name: 'Testing',
+                                complexity: {
+                                    'XS': 2,
+                                    'S': 4,
+                                    'M': 8,
+                                    'L': 12,
+                                    'XL': 16
+                                }
+                            },
+                            {
+                                name: 'Documentation',
+                                complexity: {
+                                    'XS': 1,
+                                    'S': 2,
+                                    'M': 4,
+                                    'L': 6,
+                                    'XL': 8
+                                }
+                            }
                         ]
                     }
                 },
+                complexitySizes: ['XS', 'S', 'M', 'L', 'XL'],
+                storyTypes: {},
                 projects: {},
                 users: [
                     { id: 'estimator', name: 'Estimator', role: 'estimator' },
@@ -69,7 +188,7 @@ class EstimationTool {
 
     bindEvents() {
         document.addEventListener('DOMContentLoaded', () => {
-            this.renderStoryTypes();
+            this.renderCategories();
         });
     }
 
@@ -78,7 +197,7 @@ class EstimationTool {
         document.getElementById('current-user').textContent = userType.charAt(0).toUpperCase() + userType.slice(1);
         document.getElementById('login-screen').classList.remove('active');
         document.getElementById('main-screen').classList.add('active');
-        this.renderStoryTypes();
+        this.renderCategories();
         this.renderProjects();
         this.populateProjectSelector();
     }
@@ -97,7 +216,7 @@ class EstimationTool {
         document.getElementById(tabName).classList.add('active');
 
         if (tabName === 'estimation-matrix') {
-            this.renderStoryTypes();
+            this.renderCategories();
         } else if (tabName === 'projects') {
             this.renderProjects();
         } else if (tabName === 'project-plan') {
@@ -105,161 +224,195 @@ class EstimationTool {
         }
     }
 
-    renderStoryTypes() {
+    renderCategories() {
         const data = this.getData();
         const container = document.getElementById('story-types-container');
         container.innerHTML = '';
 
-        Object.values(data.storyTypes).forEach(storyType => {
-            const storyTypeElement = this.createStoryTypeElement(storyType);
-            container.appendChild(storyTypeElement);
+        Object.values(data.categories).forEach(category => {
+            const categoryElement = this.createCategoryElement(category);
+            container.appendChild(categoryElement);
         });
 
         if (this.currentUser !== 'admin') {
-            document.querySelector('.section-header .add-btn').style.display = 'none';
+            const addBtn = document.querySelector('.section-header .add-btn');
+            if (addBtn) addBtn.style.display = 'none';
         }
     }
 
-    createStoryTypeElement(storyType) {
+    createCategoryElement(category) {
         const div = document.createElement('div');
-        div.className = 'story-type-card';
-
-        const totalHours = storyType.subtasks.reduce((sum, task) => sum + task.hours, 0);
+        div.className = 'category-card';
+        const data = this.getData();
 
         div.innerHTML = `
-            <div class="story-type-header">
-                <h3>${storyType.name}</h3>
-                <div class="story-actions">
+            <div class="category-header">
+                <h3>${category.name}</h3>
+                <div class="category-actions">
                     ${this.currentUser === 'admin' ? `
-                        <button class="edit-btn" onclick="app.editStoryType('${storyType.id}')">Edit</button>
-                        <button class="delete-btn" onclick="app.deleteStoryType('${storyType.id}')">Delete</button>
+                        <button class="edit-btn" onclick="app.editCategory('${category.id}')">Edit</button>
+                        <button class="delete-btn" onclick="app.deleteCategory('${category.id}')">Delete</button>
                     ` : ''}
                 </div>
             </div>
-            <div class="subtasks-list">
-                ${storyType.subtasks.map(subtask => `
-                    <div class="subtask-item">
-                        <div class="subtask-name">${subtask.name}</div>
-                        <div class="subtask-time">${subtask.hours} hours</div>
-                    </div>
-                `).join('')}
-            </div>
-            <div style="margin-top: 1rem; font-weight: bold; color: #27ae60;">
-                Total: ${totalHours} hours
+            <div class="estimation-grid">
+                <table class="estimation-table">
+                    <thead>
+                        <tr>
+                            <th>Step</th>
+                            ${data.complexitySizes.map(size => `<th>${size}</th>`).join('')}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${category.steps.map(step => `
+                            <tr>
+                                <td class="step-name">${step.name}</td>
+                                ${data.complexitySizes.map(size => `
+                                    <td class="complexity-hours">${step.complexity[size] || 0}h</td>
+                                `).join('')}
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
             </div>
         `;
 
         return div;
     }
 
-    addStoryType() {
+    addCategory() {
         if (this.currentUser !== 'admin') {
-            alert('Only admins can add story types');
+            alert('Only admins can add categories');
             return;
         }
-        this.currentStoryTypeId = null;
-        document.getElementById('modal-title').textContent = 'Add Story Type';
-        document.getElementById('story-type-name').value = '';
-        document.getElementById('subtasks-container').innerHTML = '';
-        this.addSubtask();
-        document.getElementById('story-type-modal').classList.remove('hidden');
+        this.currentCategoryId = null;
+        document.getElementById('modal-title').textContent = 'Add Category';
+        document.getElementById('category-name').value = '';
+        document.getElementById('steps-container').innerHTML = '';
+        this.addStep();
+        document.getElementById('category-modal').classList.remove('hidden');
     }
 
-    editStoryType(id) {
+    editCategory(id) {
         if (this.currentUser !== 'admin') {
-            alert('Only admins can edit story types');
+            alert('Only admins can edit categories');
             return;
         }
 
         const data = this.getData();
-        const storyType = data.storyTypes[id];
+        const category = data.categories[id];
 
-        this.currentStoryTypeId = id;
-        document.getElementById('modal-title').textContent = 'Edit Story Type';
-        document.getElementById('story-type-name').value = storyType.name;
+        this.currentCategoryId = id;
+        document.getElementById('modal-title').textContent = 'Edit Category';
+        document.getElementById('category-name').value = category.name;
 
-        const container = document.getElementById('subtasks-container');
+        const container = document.getElementById('steps-container');
         container.innerHTML = '';
 
-        storyType.subtasks.forEach(subtask => {
-            this.addSubtask(subtask.name, subtask.hours);
+        category.steps.forEach(step => {
+            this.addStep(step.name, step.complexity);
         });
 
-        document.getElementById('story-type-modal').classList.remove('hidden');
+        document.getElementById('category-modal').classList.remove('hidden');
     }
 
-    deleteStoryType(id) {
+    deleteCategory(id) {
         if (this.currentUser !== 'admin') {
-            alert('Only admins can delete story types');
+            alert('Only admins can delete categories');
             return;
         }
 
-        if (confirm('Are you sure you want to delete this story type?')) {
+        if (confirm('Are you sure you want to delete this category?')) {
             const data = this.getData();
-            delete data.storyTypes[id];
+            delete data.categories[id];
             this.saveData(data);
-            this.renderStoryTypes();
+            this.renderCategories();
         }
     }
 
-    addSubtask(name = '', hours = '') {
-        const container = document.getElementById('subtasks-container');
+    addStep(name = '', complexity = {}) {
+        const container = document.getElementById('steps-container');
         const div = document.createElement('div');
-        div.className = 'subtask-form';
+        div.className = 'step-form';
+        const data = this.getData();
 
         div.innerHTML = `
-            <input type="text" placeholder="Subtask name" value="${name}" required>
-            <input type="number" placeholder="Hours" value="${hours}" step="0.5" min="0" required>
-            <button type="button" class="remove-subtask-btn" onclick="this.parentElement.remove()">Remove</button>
+            <input type="text" placeholder="Step name" value="${name}" required>
+            <div class="complexity-inputs">
+                ${data.complexitySizes.map(size => `
+                    <input type="number" placeholder="${size}" value="${complexity[size] || ''}"
+                           step="0.25" min="0" data-complexity="${size}" required>
+                `).join('')}
+            </div>
+            <button type="button" class="remove-step-btn" onclick="this.parentElement.remove()">Remove</button>
         `;
 
         container.appendChild(div);
     }
 
-    saveStoryType() {
-        const name = document.getElementById('story-type-name').value.trim();
+    saveCategory() {
+        const name = document.getElementById('category-name').value.trim();
         if (!name) {
-            alert('Please enter a story type name');
+            alert('Please enter a category name');
             return;
         }
 
-        const subtaskForms = document.querySelectorAll('.subtask-form');
-        const subtasks = [];
+        const stepForms = document.querySelectorAll('.step-form');
+        const steps = [];
+        const data = this.getData();
 
-        for (let form of subtaskForms) {
-            const inputs = form.querySelectorAll('input');
-            const taskName = inputs[0].value.trim();
-            const hours = parseFloat(inputs[1].value);
+        for (let form of stepForms) {
+            const stepNameInput = form.querySelector('input[type="text"]');
+            const complexityInputs = form.querySelectorAll('input[type="number"]');
+            const stepName = stepNameInput.value.trim();
 
-            if (!taskName || isNaN(hours) || hours < 0) {
-                alert('Please fill all subtask fields with valid values');
+            if (!stepName) {
+                alert('Please fill all step names');
                 return;
             }
 
-            subtasks.push({ name: taskName, hours });
+            const complexity = {};
+            let allValid = true;
+
+            complexityInputs.forEach(input => {
+                const size = input.dataset.complexity;
+                const hours = parseFloat(input.value);
+                if (isNaN(hours) || hours < 0) {
+                    allValid = false;
+                } else {
+                    complexity[size] = hours;
+                }
+            });
+
+            if (!allValid) {
+                alert('Please fill all complexity values with valid numbers');
+                return;
+            }
+
+            steps.push({ name: stepName, complexity });
         }
 
-        if (subtasks.length === 0) {
-            alert('Please add at least one subtask');
+        if (steps.length === 0) {
+            alert('Please add at least one step');
             return;
         }
 
-        const data = this.getData();
-        const id = this.currentStoryTypeId || 'st' + Date.now();
+        const id = this.currentCategoryId || 'cat' + Date.now();
 
-        data.storyTypes[id] = {
+        data.categories[id] = {
             id,
             name,
-            subtasks
+            steps
         };
 
         this.saveData(data);
         this.closeModal();
-        this.renderStoryTypes();
+        this.renderCategories();
     }
 
     closeModal() {
-        document.getElementById('story-type-modal').classList.add('hidden');
+        const categoryModal = document.getElementById('category-modal');
+        if (categoryModal) categoryModal.classList.add('hidden');
     }
 
     renderProjects() {
@@ -344,11 +497,19 @@ class EstimationTool {
                 <button type="button" class="delete-btn" onclick="app.removeLineItem(this)">Remove</button>
             </div>
             <div class="line-item-controls">
-                <select class="story-type-select" onchange="app.updateLineItemEstimate(this)">
-                    <option value="">Select Story Type</option>
-                    ${Object.values(data.storyTypes).map(st => `
-                        <option value="${st.id}" ${existingItem && existingItem.storyTypeId === st.id ? 'selected' : ''}>
-                            ${st.name}
+                <select class="category-select" onchange="app.updateLineItemEstimate(this)">
+                    <option value="">Select Category</option>
+                    ${Object.values(data.categories).map(cat => `
+                        <option value="${cat.id}" ${existingItem && existingItem.categoryId === cat.id ? 'selected' : ''}>
+                            ${cat.name}
+                        </option>
+                    `).join('')}
+                </select>
+                <select class="complexity-select" onchange="app.updateLineItemEstimate(this)">
+                    <option value="">Select Complexity</option>
+                    ${data.complexitySizes.map(size => `
+                        <option value="${size}" ${existingItem && existingItem.complexity === size ? 'selected' : ''}>
+                            ${size}
                         </option>
                     `).join('')}
                 </select>
@@ -364,7 +525,7 @@ class EstimationTool {
         container.appendChild(div);
 
         if (existingItem) {
-            this.updateLineItemEstimate(div.querySelector('.story-type-select'));
+            this.updateLineItemEstimate(div.querySelector('.category-select'));
         }
     }
 
@@ -379,12 +540,13 @@ class EstimationTool {
 
     updateLineItemEstimate(element) {
         const lineItem = element.closest('.line-item');
-        const storyTypeId = lineItem.querySelector('.story-type-select').value;
+        const categoryId = lineItem.querySelector('.category-select').value;
+        const complexity = lineItem.querySelector('.complexity-select').value;
         const multiplier = parseFloat(lineItem.querySelector('.multiplier-input').value) || 1;
         const overrideHours = parseFloat(lineItem.querySelector('.override-input').value);
         const estimatedTimeEl = lineItem.querySelector('.estimated-time');
 
-        if (!storyTypeId) {
+        if (!categoryId || !complexity) {
             estimatedTimeEl.textContent = '0 hours';
             this.updateProjectTotal();
             return;
@@ -397,10 +559,12 @@ class EstimationTool {
         }
 
         const data = this.getData();
-        const storyType = data.storyTypes[storyTypeId];
+        const category = data.categories[categoryId];
 
-        if (storyType) {
-            const baseHours = storyType.subtasks.reduce((sum, task) => sum + task.hours, 0);
+        if (category) {
+            const baseHours = category.steps.reduce((sum, step) => {
+                return sum + (step.complexity[complexity] || 0);
+            }, 0);
             const finalHours = baseHours * multiplier;
             estimatedTimeEl.textContent = `${finalHours.toFixed(1)} hours`;
         }
@@ -430,15 +594,17 @@ class EstimationTool {
 
         const lineItems = [];
         document.querySelectorAll('.line-item').forEach(item => {
-            const storyTypeId = item.querySelector('.story-type-select').value;
+            const categoryId = item.querySelector('.category-select').value;
+            const complexity = item.querySelector('.complexity-select').value;
             const multiplier = parseFloat(item.querySelector('.multiplier-input').value) || 1;
             const overrideHours = parseFloat(item.querySelector('.override-input').value);
             const description = item.querySelector('input[type="text"]').value.trim();
             const estimatedHours = parseFloat(item.querySelector('.estimated-time').textContent.replace(' hours', '')) || 0;
 
-            if (storyTypeId) {
+            if (categoryId && complexity) {
                 lineItems.push({
-                    storyTypeId,
+                    categoryId,
+                    complexity,
                     multiplier,
                     overrideHours: !isNaN(overrideHours) ? overrideHours : null,
                     description,
@@ -448,7 +614,7 @@ class EstimationTool {
         });
 
         if (lineItems.length === 0) {
-            alert('Please add at least one line item with a story type');
+            alert('Please add at least one line item with a category and complexity');
             return;
         }
 
@@ -522,7 +688,7 @@ class EstimationTool {
                             </select>
                         </div>
                         <div style="margin-top: 0.5rem; color: #7f8c8d;">
-                            Story Type: ${data.storyTypes[item.storyTypeId]?.name || 'Unknown'}
+                            Category: ${data.categories[item.categoryId]?.name || 'Unknown'} | Complexity: ${item.complexity || 'Unknown'}
                             ${item.multiplier !== 1 ? ` | Multiplier: ${item.multiplier}` : ''}
                             ${item.overrideHours ? ' | Override Applied' : ''}
                         </div>
@@ -548,11 +714,11 @@ const app = new EstimationTool();
 function login(userType) { app.login(userType); }
 function logout() { app.logout(); }
 function showTab(tabName) { app.showTab(tabName); }
-function addStoryType() { app.addStoryType(); }
-function editStoryType(id) { app.editStoryType(id); }
-function deleteStoryType(id) { app.deleteStoryType(id); }
-function addSubtask(name, hours) { app.addSubtask(name, hours); }
-function saveStoryType() { app.saveStoryType(); }
+function addCategory() { app.addCategory(); }
+function editCategory(id) { app.editCategory(id); }
+function deleteCategory(id) { app.deleteCategory(id); }
+function addStep(name, complexity) { app.addStep(name, complexity); }
+function saveCategory() { app.saveCategory(); }
 function closeModal() { app.closeModal(); }
 function createProject() { app.createProject(); }
 function editProject(id) { app.editProject(id); }

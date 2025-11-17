@@ -304,7 +304,7 @@ header h1 {
 
 .line-item-controls {
     display: grid;
-    grid-template-columns: 2fr 1fr 1fr 1fr;
+    grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
     gap: 1rem;
     margin-bottom: 0.5rem;
 }
@@ -464,6 +464,148 @@ header h1 {
     border-radius: 3px;
 }
 
+/* Category Cards */
+.category-card {
+    background: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.category-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.category-header h3 {
+    color: #2c3e50;
+    font-size: 1.4rem;
+}
+
+.category-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+/* Estimation Table */
+.estimation-grid {
+    overflow-x: auto;
+}
+
+.estimation-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+}
+
+.estimation-table th,
+.estimation-table td {
+    padding: 0.8rem;
+    text-align: center;
+    border: 1px solid #e9ecef;
+}
+
+.estimation-table th {
+    background: #f8f9fa;
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.estimation-table .step-name {
+    text-align: left;
+    font-weight: 500;
+    background: #f8f9fa;
+    width: 25%;
+}
+
+.estimation-table .complexity-hours {
+    background: white;
+    color: #27ae60;
+    font-weight: 500;
+}
+
+.estimation-table tr:hover {
+    background: #f1f3f4;
+}
+
+/* Category Modal Enhancements */
+.category-modal-content {
+    max-width: 800px;
+    width: 95%;
+}
+
+.steps-section {
+    margin-top: 1.5rem;
+}
+
+.complexity-header {
+    display: grid;
+    grid-template-columns: 2fr 3fr 1fr;
+    gap: 1rem;
+    padding: 0.8rem;
+    background: #f8f9fa;
+    border-radius: 5px;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+    color: #2c3e50;
+    align-items: center;
+}
+
+.complexity-sizes {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0.5rem;
+    text-align: center;
+}
+
+.step-form {
+    display: grid;
+    grid-template-columns: 2fr 3fr 1fr;
+    gap: 1rem;
+    padding: 0.8rem;
+    background: white;
+    border: 1px solid #e9ecef;
+    border-radius: 5px;
+    margin-bottom: 0.5rem;
+    align-items: center;
+}
+
+.step-form input[type="text"] {
+    margin: 0;
+    padding: 0.6rem;
+}
+
+.complexity-inputs {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0.5rem;
+}
+
+.complexity-inputs input {
+    margin: 0;
+    padding: 0.4rem;
+    text-align: center;
+    font-size: 0.85rem;
+}
+
+.remove-step-btn {
+    background: #e74c3c;
+    color: white;
+    border: none;
+    padding: 0.6rem;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 0.8rem;
+}
+
+.remove-step-btn:hover {
+    background: #c0392b;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .login-options {
@@ -490,5 +632,26 @@ header h1 {
     .tab-navigation {
         flex-wrap: wrap;
         justify-content: center;
+    }
+
+    .estimation-table {
+        font-size: 0.8rem;
+    }
+
+    .estimation-table th,
+    .estimation-table td {
+        padding: 0.5rem 0.3rem;
+    }
+
+    .complexity-header,
+    .step-form {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+    }
+
+    .complexity-sizes,
+    .complexity-inputs {
+        grid-template-columns: repeat(5, 1fr);
+        gap: 0.25rem;
     }
 }

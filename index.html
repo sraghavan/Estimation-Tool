@@ -47,7 +47,7 @@
             <div id="estimation-matrix" class="tab-content active">
                 <div class="section-header">
                     <h2>Estimation Matrix</h2>
-                    <button onclick="addStoryType()" class="add-btn">Add Story Type</button>
+                    <button onclick="addCategory()" class="add-btn">Add Category</button>
                 </div>
                 <div id="story-types-container">
                     <!-- Story types will be dynamically generated -->
@@ -95,25 +95,36 @@
         </div>
     </div>
 
-    <!-- Modal for editing story types -->
-    <div id="story-type-modal" class="modal hidden">
-        <div class="modal-content">
+    <!-- Modal for editing categories -->
+    <div id="category-modal" class="modal hidden">
+        <div class="modal-content category-modal-content">
             <div class="modal-header">
-                <h3 id="modal-title">Add Story Type</h3>
+                <h3 id="modal-title">Add Category</h3>
                 <span class="close" onclick="closeModal()">&times;</span>
             </div>
             <div class="modal-body">
-                <input type="text" id="story-type-name" placeholder="Story Type Name" required>
-                <div class="subtasks-section">
-                    <h4>Subtasks</h4>
-                    <div id="subtasks-container">
-                        <!-- Subtasks will be added here -->
+                <input type="text" id="category-name" placeholder="Category Name" required>
+                <div class="steps-section">
+                    <h4>Steps & Time Estimates</h4>
+                    <div class="complexity-header">
+                        <span>Step Name</span>
+                        <div class="complexity-sizes">
+                            <span>XS</span>
+                            <span>S</span>
+                            <span>M</span>
+                            <span>L</span>
+                            <span>XL</span>
+                        </div>
+                        <span>Action</span>
                     </div>
-                    <button onclick="addSubtask()" class="add-btn">Add Subtask</button>
+                    <div id="steps-container">
+                        <!-- Steps will be added here -->
+                    </div>
+                    <button onclick="addStep()" class="add-btn">Add Step</button>
                 </div>
             </div>
             <div class="modal-footer">
-                <button onclick="saveStoryType()" class="save-btn">Save</button>
+                <button onclick="saveCategory()" class="save-btn">Save</button>
                 <button onclick="closeModal()" class="cancel-btn">Cancel</button>
             </div>
         </div>
