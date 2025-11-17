@@ -5,6 +5,7 @@ class EstimationTool {
         this.currentProjectId = null;
         this.initializeData();
         this.bindEvents();
+        this.initializeRouting();
     }
 
     initializeData() {
@@ -397,32 +398,71 @@ class EstimationTool {
 
     bindEvents() {
         document.addEventListener('DOMContentLoaded', () => {
-            this.renderCategories();
+            this.checkRoute();
+        });
+
+        window.addEventListener('popstate', () => {
+            this.checkRoute();
         });
     }
 
-    login(userType) {
+    initializeRouting() {
+        // Handle initial route
+        this.checkRoute();
+    }
+
+    checkRoute() {
+        const hash = window.location.hash.slice(1); // Remove #
+        const parts = hash.split('/');
+        const route = parts[0] || 'login';
+
+        if (route === 'login') {
+            this.showLoginScreen();
+        } else if (route === 'app') {
+            const userType = parts[1];
+            const tab = parts[2] || 'estimation-matrix';
+
+            if (userType) {
+                this.loginWithRoute(userType, tab);
+            } else {
+                this.showLoginScreen();
+            }
+        }
+    }
+
+    updateRoute(route) {
+        window.history.pushState(null, null, `#${route}`);
+    }
+
+    showLoginScreen() {
+        document.getElementById('login-screen').classList.add('active');
+        document.getElementById('main-screen').classList.remove('active');
+        this.currentUser = null;
+    }
+
+    loginWithRoute(userType, tab) {
         this.currentUser = userType;
         document.getElementById('current-user').textContent = userType.charAt(0).toUpperCase() + userType.slice(1);
         document.getElementById('login-screen').classList.remove('active');
         document.getElementById('main-screen').classList.add('active');
+
+        // Show the specified tab
+        this.showTabByName(tab);
+
         this.renderCategories();
         this.renderProjects();
         this.populateProjectSelector();
     }
 
-    logout() {
-        this.currentUser = null;
-        document.getElementById('login-screen').classList.add('active');
-        document.getElementById('main-screen').classList.remove('active');
-    }
-
-    showTab(tabName) {
+    showTabByName(tabName) {
         document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
         document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
 
-        event.target.classList.add('active');
-        document.getElementById(tabName).classList.add('active');
+        const tabBtn = document.querySelector(`[onclick="showTab('${tabName}')"]`);
+        if (tabBtn) tabBtn.classList.add('active');
+
+        const tabContent = document.getElementById(tabName);
+        if (tabContent) tabContent.classList.add('active');
 
         if (tabName === 'estimation-matrix') {
             this.renderCategories();
@@ -431,6 +471,23 @@ class EstimationTool {
         } else if (tabName === 'project-plan') {
             this.populateProjectSelector();
         }
+    }
+
+    login(userType) {
+        this.updateRoute(`app/${userType}/estimation-matrix`);
+        this.loginWithRoute(userType, 'estimation-matrix');
+    }
+
+    logout() {
+        this.updateRoute('login');
+        this.showLoginScreen();
+    }
+
+    showTab(tabName) {
+        if (this.currentUser) {
+            this.updateRoute(`app/${this.currentUser}/${tabName}`);
+        }
+        this.showTabByName(tabName);
     }
 
     renderCategories() {
@@ -443,9 +500,13 @@ class EstimationTool {
             container.appendChild(categoryElement);
         });
 
-        if (this.currentUser !== 'admin') {
-            const addBtn = document.querySelector('.section-header .add-btn');
-            if (addBtn) addBtn.style.display = 'none';
+        const addBtn = document.querySelector('.section-header .add-btn');
+        if (addBtn) {
+            if (this.currentUser === 'admin') {
+                addBtn.style.display = 'inline-block';
+            } else {
+                addBtn.style.display = 'none';
+            }
         }
     }
 
@@ -495,16 +556,24 @@ class EstimationTool {
     }
 
     addCategory() {
+        console.log('addCategory called, currentUser:', this.currentUser);
         if (this.currentUser !== 'admin') {
             alert('Only admins can add categories');
             return;
         }
-        this.currentCategoryId = null;
-        document.getElementById('modal-title').textContent = 'Add Category';
-        document.getElementById('category-name').value = '';
-        document.getElementById('steps-container').innerHTML = '';
-        this.addStep();
-        document.getElementById('category-modal').classList.remove('hidden');
+
+        try {
+            this.currentCategoryId = null;
+            document.getElementById('modal-title').textContent = 'Add Category';
+            document.getElementById('category-name').value = '';
+            document.getElementById('steps-container').innerHTML = '';
+            this.addStep();
+            document.getElementById('category-modal').classList.remove('hidden');
+            console.log('Category modal should be visible now');
+        } catch (error) {
+            console.error('Error in addCategory:', error);
+            alert('Error opening category modal: ' + error.message);
+        }
     }
 
     editCategory(id) {
