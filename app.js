@@ -965,7 +965,7 @@ function showTab(tabName) { app.showTab(tabName); }
 function addCategory() { app.addCategory(); }
 function editCategory(id) { app.editCategory(id); }
 function deleteCategory(id) { app.deleteCategory(id); }
-function addStep(name, complexity) { app.addStep(name, complexity); }
+function addStep(name, estimates) { app.addStep(name, estimates); }
 function saveCategory() { app.saveCategory(); }
 function closeModal() { app.closeModal(); }
 function createProject() { app.createProject(); }
