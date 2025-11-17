@@ -17,52 +17,132 @@ class EstimationTool {
                         steps: [
                             {
                                 name: 'Analysis',
-                                complexity: {
-                                    'XS': 1,
-                                    'S': 2,
-                                    'M': 4,
-                                    'L': 8,
-                                    'XL': 16
+                                estimates: {
+                                    'Small': {
+                                        'XS': 1,
+                                        'S': 2,
+                                        'M': 4,
+                                        'L': 8,
+                                        'XL': 16
+                                    },
+                                    'Medium': {
+                                        'XS': 1.5,
+                                        'S': 3,
+                                        'M': 6,
+                                        'L': 12,
+                                        'XL': 24
+                                    },
+                                    'Large': {
+                                        'XS': 2,
+                                        'S': 4,
+                                        'M': 8,
+                                        'L': 16,
+                                        'XL': 32
+                                    }
                                 }
                             },
                             {
                                 name: 'Design',
-                                complexity: {
-                                    'XS': 2,
-                                    'S': 4,
-                                    'M': 8,
-                                    'L': 16,
-                                    'XL': 24
+                                estimates: {
+                                    'Small': {
+                                        'XS': 2,
+                                        'S': 4,
+                                        'M': 8,
+                                        'L': 16,
+                                        'XL': 24
+                                    },
+                                    'Medium': {
+                                        'XS': 3,
+                                        'S': 6,
+                                        'M': 12,
+                                        'L': 24,
+                                        'XL': 36
+                                    },
+                                    'Large': {
+                                        'XS': 4,
+                                        'S': 8,
+                                        'M': 16,
+                                        'L': 32,
+                                        'XL': 48
+                                    }
                                 }
                             },
                             {
                                 name: 'Development',
-                                complexity: {
-                                    'XS': 4,
-                                    'S': 8,
-                                    'M': 16,
-                                    'L': 32,
-                                    'XL': 48
+                                estimates: {
+                                    'Small': {
+                                        'XS': 4,
+                                        'S': 8,
+                                        'M': 16,
+                                        'L': 32,
+                                        'XL': 48
+                                    },
+                                    'Medium': {
+                                        'XS': 6,
+                                        'S': 12,
+                                        'M': 24,
+                                        'L': 48,
+                                        'XL': 72
+                                    },
+                                    'Large': {
+                                        'XS': 8,
+                                        'S': 16,
+                                        'M': 32,
+                                        'L': 64,
+                                        'XL': 96
+                                    }
                                 }
                             },
                             {
                                 name: 'Testing',
-                                complexity: {
-                                    'XS': 2,
-                                    'S': 4,
-                                    'M': 8,
-                                    'L': 12,
-                                    'XL': 16
+                                estimates: {
+                                    'Small': {
+                                        'XS': 2,
+                                        'S': 4,
+                                        'M': 8,
+                                        'L': 12,
+                                        'XL': 16
+                                    },
+                                    'Medium': {
+                                        'XS': 3,
+                                        'S': 6,
+                                        'M': 12,
+                                        'L': 18,
+                                        'XL': 24
+                                    },
+                                    'Large': {
+                                        'XS': 4,
+                                        'S': 8,
+                                        'M': 16,
+                                        'L': 24,
+                                        'XL': 32
+                                    }
                                 }
                             },
                             {
                                 name: 'Code Review',
-                                complexity: {
-                                    'XS': 1,
-                                    'S': 2,
-                                    'M': 3,
-                                    'L': 4,
-                                    'XL': 6
+                                estimates: {
+                                    'Small': {
+                                        'XS': 1,
+                                        'S': 2,
+                                        'M': 3,
+                                        'L': 4,
+                                        'XL': 6
+                                    },
+                                    'Medium': {
+                                        'XS': 1.5,
+                                        'S': 3,
+                                        'M': 4.5,
+                                        'L': 6,
+                                        'XL': 9
+                                    },
+                                    'Large': {
+                                        'XS': 2,
+                                        'S': 4,
+                                        'M': 6,
+                                        'L': 8,
+                                        'XL': 12
+                                    }
                                 }
                             }
                         ]
@@ -73,42 +153,106 @@ class EstimationTool {
                         steps: [
                             {
                                 name: 'Investigation',
-                                complexity: {
-                                    'XS': 0.5,
-                                    'S': 1,
-                                    'M': 2,
-                                    'L': 4,
-                                    'XL': 8
+                                estimates: {
+                                    'Small': {
+                                        'XS': 0.5,
+                                        'S': 1,
+                                        'M': 2,
+                                        'L': 4,
+                                        'XL': 8
+                                    },
+                                    'Medium': {
+                                        'XS': 1,
+                                        'S': 2,
+                                        'M': 3,
+                                        'L': 6,
+                                        'XL': 12
+                                    },
+                                    'Large': {
+                                        'XS': 1.5,
+                                        'S': 3,
+                                        'M': 4,
+                                        'L': 8,
+                                        'XL': 16
+                                    }
                                 }
                             },
                             {
                                 name: 'Implementation',
-                                complexity: {
-                                    'XS': 1,
-                                    'S': 2,
-                                    'M': 4,
-                                    'L': 8,
-                                    'XL': 12
+                                estimates: {
+                                    'Small': {
+                                        'XS': 1,
+                                        'S': 2,
+                                        'M': 4,
+                                        'L': 8,
+                                        'XL': 12
+                                    },
+                                    'Medium': {
+                                        'XS': 2,
+                                        'S': 3,
+                                        'M': 6,
+                                        'L': 12,
+                                        'XL': 18
+                                    },
+                                    'Large': {
+                                        'XS': 3,
+                                        'S': 4,
+                                        'M': 8,
+                                        'L': 16,
+                                        'XL': 24
+                                    }
                                 }
                             },
                             {
                                 name: 'Testing',
-                                complexity: {
-                                    'XS': 0.5,
-                                    'S': 1,
-                                    'M': 2,
-                                    'L': 4,
-                                    'XL': 6
+                                estimates: {
+                                    'Small': {
+                                        'XS': 0.5,
+                                        'S': 1,
+                                        'M': 2,
+                                        'L': 4,
+                                        'XL': 6
+                                    },
+                                    'Medium': {
+                                        'XS': 1,
+                                        'S': 1.5,
+                                        'M': 3,
+                                        'L': 6,
+                                        'XL': 9
+                                    },
+                                    'Large': {
+                                        'XS': 1.5,
+                                        'S': 2,
+                                        'M': 4,
+                                        'L': 8,
+                                        'XL': 12
+                                    }
                                 }
                             },
                             {
                                 name: 'Code Review',
-                                complexity: {
-                                    'XS': 0.25,
-                                    'S': 0.5,
-                                    'M': 1,
-                                    'L': 2,
-                                    'XL': 3
+                                estimates: {
+                                    'Small': {
+                                        'XS': 0.25,
+                                        'S': 0.5,
+                                        'M': 1,
+                                        'L': 2,
+                                        'XL': 3
+                                    },
+                                    'Medium': {
+                                        'XS': 0.5,
+                                        'S': 0.75,
+                                        'M': 1.5,
+                                        'L': 3,
+                                        'XL': 4.5
+                                    },
+                                    'Large': {
+                                        'XS': 0.75,
+                                        'S': 1,
+                                        'M': 2,
+                                        'L': 4,
+                                        'XL': 6
+                                    }
                                 }
                             }
                         ]
@@ -119,48 +263,113 @@ class EstimationTool {
                         steps: [
                             {
                                 name: 'API Design',
-                                complexity: {
-                                    'XS': 2,
-                                    'S': 4,
-                                    'M': 8,
-                                    'L': 12,
-                                    'XL': 16
+                                estimates: {
+                                    'Small': {
+                                        'XS': 2,
+                                        'S': 4,
+                                        'M': 8,
+                                        'L': 12,
+                                        'XL': 16
+                                    },
+                                    'Medium': {
+                                        'XS': 3,
+                                        'S': 6,
+                                        'M': 12,
+                                        'L': 18,
+                                        'XL': 24
+                                    },
+                                    'Large': {
+                                        'XS': 4,
+                                        'S': 8,
+                                        'M': 16,
+                                        'L': 24,
+                                        'XL': 32
+                                    }
                                 }
                             },
                             {
                                 name: 'Implementation',
-                                complexity: {
-                                    'XS': 4,
-                                    'S': 8,
-                                    'M': 16,
-                                    'L': 24,
-                                    'XL': 32
+                                estimates: {
+                                    'Small': {
+                                        'XS': 4,
+                                        'S': 8,
+                                        'M': 16,
+                                        'L': 24,
+                                        'XL': 32
+                                    },
+                                    'Medium': {
+                                        'XS': 6,
+                                        'S': 12,
+                                        'M': 24,
+                                        'L': 36,
+                                        'XL': 48
+                                    },
+                                    'Large': {
+                                        'XS': 8,
+                                        'S': 16,
+                                        'M': 32,
+                                        'L': 48,
+                                        'XL': 64
+                                    }
                                 }
                             },
                             {
                                 name: 'Testing',
-                                complexity: {
-                                    'XS': 2,
-                                    'S': 4,
-                                    'M': 8,
-                                    'L': 12,
-                                    'XL': 16
+                                estimates: {
+                                    'Small': {
+                                        'XS': 2,
+                                        'S': 4,
+                                        'M': 8,
+                                        'L': 12,
+                                        'XL': 16
+                                    },
+                                    'Medium': {
+                                        'XS': 3,
+                                        'S': 6,
+                                        'M': 12,
+                                        'L': 18,
+                                        'XL': 24
+                                    },
+                                    'Large': {
+                                        'XS': 4,
+                                        'S': 8,
+                                        'M': 16,
+                                        'L': 24,
+                                        'XL': 32
+                                    }
                                 }
                             },
                             {
                                 name: 'Documentation',
-                                complexity: {
-                                    'XS': 1,
-                                    'S': 2,
-                                    'M': 4,
-                                    'L': 6,
-                                    'XL': 8
+                                estimates: {
+                                    'Small': {
+                                        'XS': 1,
+                                        'S': 2,
+                                        'M': 4,
+                                        'L': 6,
+                                        'XL': 8
+                                    },
+                                    'Medium': {
+                                        'XS': 1.5,
+                                        'S': 3,
+                                        'M': 6,
+                                        'L': 9,
+                                        'XL': 12
+                                    },
+                                    'Large': {
+                                        'XS': 2,
+                                        'S': 4,
+                                        'M': 8,
+                                        'L': 12,
+                                        'XL': 16
+                                    }
                                 }
                             }
                         ]
                     }
                 },
                 complexitySizes: ['XS', 'S', 'M', 'L', 'XL'],
+                storySizes: ['Small', 'Medium', 'Large'],
                 storyTypes: {},
                 projects: {},
                 users: [
@@ -255,25 +464,30 @@ class EstimationTool {
                     ` : ''}
                 </div>
             </div>
-            <div class="estimation-grid">
-                <table class="estimation-table">
-                    <thead>
-                        <tr>
-                            <th>Step</th>
-                            ${data.complexitySizes.map(size => `<th>${size}</th>`).join('')}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${category.steps.map(step => `
-                            <tr>
-                                <td class="step-name">${step.name}</td>
-                                ${data.complexitySizes.map(size => `
-                                    <td class="complexity-hours">${step.complexity[size] || 0}h</td>
+            <div class="estimation-grid-3d">
+                ${data.storySizes.map(size => `
+                    <div class="size-section">
+                        <h4 class="size-title">${size} Stories</h4>
+                        <table class="estimation-table">
+                            <thead>
+                                <tr>
+                                    <th>Step</th>
+                                    ${data.complexitySizes.map(complexity => `<th>${complexity}</th>`).join('')}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${category.steps.map(step => `
+                                    <tr>
+                                        <td class="step-name">${step.name}</td>
+                                        ${data.complexitySizes.map(complexity => `
+                                            <td class="complexity-hours">${step.estimates[size][complexity] || 0}h</td>
+                                        `).join('')}
+                                    </tr>
                                 `).join('')}
-                            </tr>
-                        `).join('')}
-                    </tbody>
-                </table>
+                            </tbody>
+                        </table>
+                    </div>
+                `).join('')}
             </div>
         `;
 
@@ -310,7 +524,7 @@ class EstimationTool {
         container.innerHTML = '';
 
         category.steps.forEach(step => {
-            this.addStep(step.name, step.complexity);
+            this.addStep(step.name, step.estimates);
         });
 
         document.getElementById('category-modal').classList.remove('hidden');
@@ -330,21 +544,37 @@ class EstimationTool {
         }
     }
 
-    addStep(name = '', complexity = {}) {
+    addStep(name = '', estimates = {}) {
         const container = document.getElementById('steps-container');
         const div = document.createElement('div');
-        div.className = 'step-form';
+        div.className = 'step-form-3d';
         const data = this.getData();
 
         div.innerHTML = `
-            <input type="text" placeholder="Step name" value="${name}" required>
-            <div class="complexity-inputs">
-                ${data.complexitySizes.map(size => `
-                    <input type="number" placeholder="${size}" value="${complexity[size] || ''}"
-                           step="0.25" min="0" data-complexity="${size}" required>
+            <div class="step-name-input">
+                <input type="text" placeholder="Step name" value="${name}" required>
+                <button type="button" class="remove-step-btn" onclick="this.parentElement.parentElement.remove()">Remove</button>
+            </div>
+            <div class="size-complexity-grid">
+                ${data.storySizes.map(size => `
+                    <div class="size-inputs-section">
+                        <h5>${size} Stories</h5>
+                        <div class="complexity-inputs">
+                            ${data.complexitySizes.map(complexity => `
+                                <div class="complexity-input-group">
+                                    <label>${complexity}</label>
+                                    <input type="number"
+                                           value="${estimates[size] && estimates[size][complexity] ? estimates[size][complexity] : ''}"
+                                           step="0.25" min="0"
+                                           data-size="${size}"
+                                           data-complexity="${complexity}"
+                                           placeholder="0" required>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
                 `).join('')}
             </div>
-            <button type="button" class="remove-step-btn" onclick="this.parentElement.remove()">Remove</button>
         `;
 
         container.appendChild(div);
@@ -357,13 +587,13 @@ class EstimationTool {
             return;
         }
 
-        const stepForms = document.querySelectorAll('.step-form');
+        const stepForms = document.querySelectorAll('.step-form-3d');
         const steps = [];
         const data = this.getData();
 
         for (let form of stepForms) {
             const stepNameInput = form.querySelector('input[type="text"]');
-            const complexityInputs = form.querySelectorAll('input[type="number"]');
+            const estimateInputs = form.querySelectorAll('input[type="number"]');
             const stepName = stepNameInput.value.trim();
 
             if (!stepName) {
@@ -371,25 +601,32 @@ class EstimationTool {
                 return;
             }
 
-            const complexity = {};
+            const estimates = {};
             let allValid = true;
 
-            complexityInputs.forEach(input => {
-                const size = input.dataset.complexity;
+            // Initialize estimates structure
+            data.storySizes.forEach(size => {
+                estimates[size] = {};
+            });
+
+            estimateInputs.forEach(input => {
+                const size = input.dataset.size;
+                const complexity = input.dataset.complexity;
                 const hours = parseFloat(input.value);
+
                 if (isNaN(hours) || hours < 0) {
                     allValid = false;
                 } else {
-                    complexity[size] = hours;
+                    estimates[size][complexity] = hours;
                 }
             });
 
             if (!allValid) {
-                alert('Please fill all complexity values with valid numbers');
+                alert('Please fill all estimate values with valid numbers');
                 return;
             }
 
-            steps.push({ name: stepName, complexity });
+            steps.push({ name: stepName, estimates });
         }
 
         if (steps.length === 0) {
@@ -505,11 +742,19 @@ class EstimationTool {
                         </option>
                     `).join('')}
                 </select>
+                <select class="size-select" onchange="app.updateLineItemEstimate(this)">
+                    <option value="">Select Story Size</option>
+                    ${data.storySizes.map(size => `
+                        <option value="${size}" ${existingItem && existingItem.storySize === size ? 'selected' : ''}>
+                            ${size}
+                        </option>
+                    `).join('')}
+                </select>
                 <select class="complexity-select" onchange="app.updateLineItemEstimate(this)">
                     <option value="">Select Complexity</option>
-                    ${data.complexitySizes.map(size => `
-                        <option value="${size}" ${existingItem && existingItem.complexity === size ? 'selected' : ''}>
-                            ${size}
+                    ${data.complexitySizes.map(complexity => `
+                        <option value="${complexity}" ${existingItem && existingItem.complexity === complexity ? 'selected' : ''}>
+                            ${complexity}
                         </option>
                     `).join('')}
                 </select>
@@ -541,12 +786,13 @@ class EstimationTool {
     updateLineItemEstimate(element) {
         const lineItem = element.closest('.line-item');
         const categoryId = lineItem.querySelector('.category-select').value;
+        const storySize = lineItem.querySelector('.size-select').value;
         const complexity = lineItem.querySelector('.complexity-select').value;
         const multiplier = parseFloat(lineItem.querySelector('.multiplier-input').value) || 1;
         const overrideHours = parseFloat(lineItem.querySelector('.override-input').value);
         const estimatedTimeEl = lineItem.querySelector('.estimated-time');
 
-        if (!categoryId || !complexity) {
+        if (!categoryId || !storySize || !complexity) {
             estimatedTimeEl.textContent = '0 hours';
             this.updateProjectTotal();
             return;
@@ -563,7 +809,7 @@ class EstimationTool {
 
         if (category) {
             const baseHours = category.steps.reduce((sum, step) => {
-                return sum + (step.complexity[complexity] || 0);
+                return sum + (step.estimates[storySize][complexity] || 0);
             }, 0);
             const finalHours = baseHours * multiplier;
             estimatedTimeEl.textContent = `${finalHours.toFixed(1)} hours`;
@@ -595,15 +841,17 @@ class EstimationTool {
         const lineItems = [];
         document.querySelectorAll('.line-item').forEach(item => {
             const categoryId = item.querySelector('.category-select').value;
+            const storySize = item.querySelector('.size-select').value;
             const complexity = item.querySelector('.complexity-select').value;
             const multiplier = parseFloat(item.querySelector('.multiplier-input').value) || 1;
             const overrideHours = parseFloat(item.querySelector('.override-input').value);
             const description = item.querySelector('input[type="text"]').value.trim();
             const estimatedHours = parseFloat(item.querySelector('.estimated-time').textContent.replace(' hours', '')) || 0;
 
-            if (categoryId && complexity) {
+            if (categoryId && storySize && complexity) {
                 lineItems.push({
                     categoryId,
+                    storySize,
                     complexity,
                     multiplier,
                     overrideHours: !isNaN(overrideHours) ? overrideHours : null,
@@ -614,7 +862,7 @@ class EstimationTool {
         });
 
         if (lineItems.length === 0) {
-            alert('Please add at least one line item with a category and complexity');
+            alert('Please add at least one line item with category, story size, and complexity');
             return;
         }
 
@@ -688,7 +936,7 @@ class EstimationTool {
                             </select>
                         </div>
                         <div style="margin-top: 0.5rem; color: #7f8c8d;">
-                            Category: ${data.categories[item.categoryId]?.name || 'Unknown'} | Complexity: ${item.complexity || 'Unknown'}
+                            Category: ${data.categories[item.categoryId]?.name || 'Unknown'} | Size: ${item.storySize || 'Unknown'} | Complexity: ${item.complexity || 'Unknown'}
                             ${item.multiplier !== 1 ? ` | Multiplier: ${item.multiplier}` : ''}
                             ${item.overrideHours ? ' | Override Applied' : ''}
                         </div>
