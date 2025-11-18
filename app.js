@@ -1123,8 +1123,7 @@ class EstimationTool {
                                     <span class="effective-hours"> → ${effectiveHours.toFixed(1)}h</span>
                                 ` : ''}
                             </div>
-                        </div>`;
-                }).join('')}
+                        </div>
                         <div class="resource-assignment">
                             <label>Assigned to:</label>
                             <select onchange="app.updateResourceAssignment('${projectId}', ${index}, this.value)">
