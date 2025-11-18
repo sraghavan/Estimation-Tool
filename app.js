@@ -9,7 +9,8 @@ class EstimationTool {
     }
 
     initializeData() {
-        if (!localStorage.getItem('estimationTool')) {
+        const existingData = localStorage.getItem('estimationTool');
+        if (!existingData) {
             const initialData = {
                 categories: {
                     'cat1': {
@@ -385,6 +386,70 @@ class EstimationTool {
                 ]
             };
             localStorage.setItem('estimationTool', JSON.stringify(initialData));
+        } else {
+            // Migrate existing data if needed
+            this.migrateData();
+        }
+    }
+
+    migrateData() {
+        const data = JSON.parse(localStorage.getItem('estimationTool'));
+        let needsUpdate = false;
+
+        // Add missing storySizes if not present
+        if (!data.storySizes) {
+            data.storySizes = ['Small', 'Medium', 'Large'];
+            needsUpdate = true;
+        }
+
+        // Add missing complexitySizes if not present
+        if (!data.complexitySizes) {
+            data.complexitySizes = ['XS', 'S', 'M', 'L', 'XL'];
+            needsUpdate = true;
+        }
+
+        // Migrate old storyTypes to categories if needed
+        if (data.storyTypes && Object.keys(data.storyTypes).length > 0 && (!data.categories || Object.keys(data.categories).length === 0)) {
+            data.categories = {};
+            Object.values(data.storyTypes).forEach(storyType => {
+                const categoryId = 'migrated_' + storyType.id;
+                data.categories[categoryId] = {
+                    id: categoryId,
+                    name: storyType.name,
+                    steps: storyType.subtasks.map(subtask => ({
+                        name: subtask.name,
+                        estimates: {
+                            'Small': {
+                                'XS': subtask.hours * 0.5,
+                                'S': subtask.hours * 0.75,
+                                'M': subtask.hours,
+                                'L': subtask.hours * 1.5,
+                                'XL': subtask.hours * 2
+                            },
+                            'Medium': {
+                                'XS': subtask.hours * 0.75,
+                                'S': subtask.hours,
+                                'M': subtask.hours * 1.5,
+                                'L': subtask.hours * 2,
+                                'XL': subtask.hours * 3
+                            },
+                            'Large': {
+                                'XS': subtask.hours,
+                                'S': subtask.hours * 1.5,
+                                'M': subtask.hours * 2,
+                                'L': subtask.hours * 3,
+                                'XL': subtask.hours * 4
+                            }
+                        }
+                    }))
+                };
+            });
+            needsUpdate = true;
+        }
+
+        if (needsUpdate) {
+            localStorage.setItem('estimationTool', JSON.stringify(data));
+            console.log('Data migrated successfully');
         }
     }
 
@@ -614,39 +679,55 @@ class EstimationTool {
     }
 
     addStep(name = '', estimates = {}) {
-        const container = document.getElementById('steps-container');
-        const div = document.createElement('div');
-        div.className = 'step-form-3d';
-        const data = this.getData();
+        try {
+            const container = document.getElementById('steps-container');
+            if (!container) {
+                throw new Error('Steps container not found');
+            }
 
-        div.innerHTML = `
-            <div class="step-name-input">
-                <input type="text" placeholder="Step name" value="${name}" required>
-                <button type="button" class="remove-step-btn" onclick="this.parentElement.parentElement.remove()">Remove</button>
-            </div>
-            <div class="size-complexity-grid">
-                ${data.storySizes.map(size => `
-                    <div class="size-inputs-section">
-                        <h5>${size} Stories</h5>
-                        <div class="complexity-inputs">
-                            ${data.complexitySizes.map(complexity => `
-                                <div class="complexity-input-group">
-                                    <label>${complexity}</label>
-                                    <input type="number"
-                                           value="${estimates[size] && estimates[size][complexity] ? estimates[size][complexity] : ''}"
-                                           step="0.25" min="0"
-                                           data-size="${size}"
-                                           data-complexity="${complexity}"
-                                           placeholder="0" required>
-                                </div>
-                            `).join('')}
+            const div = document.createElement('div');
+            div.className = 'step-form-3d';
+            const data = this.getData();
+
+            // Ensure data has required properties
+            const storySizes = data.storySizes || ['Small', 'Medium', 'Large'];
+            const complexitySizes = data.complexitySizes || ['XS', 'S', 'M', 'L', 'XL'];
+
+            console.log('Adding step with storySizes:', storySizes, 'complexitySizes:', complexitySizes);
+
+            div.innerHTML = `
+                <div class="step-name-input">
+                    <input type="text" placeholder="Step name" value="${name}" required>
+                    <button type="button" class="remove-step-btn" onclick="this.parentElement.parentElement.remove()">Remove</button>
+                </div>
+                <div class="size-complexity-grid">
+                    ${storySizes.map(size => `
+                        <div class="size-inputs-section">
+                            <h5>${size} Stories</h5>
+                            <div class="complexity-inputs">
+                                ${complexitySizes.map(complexity => `
+                                    <div class="complexity-input-group">
+                                        <label>${complexity}</label>
+                                        <input type="number"
+                                               value="${estimates[size] && estimates[size][complexity] ? estimates[size][complexity] : ''}"
+                                               step="0.25" min="0"
+                                               data-size="${size}"
+                                               data-complexity="${complexity}"
+                                               placeholder="0" required>
+                                    </div>
+                                `).join('')}
+                            </div>
                         </div>
-                    </div>
-                `).join('')}
-            </div>
-        `;
+                    `).join('')}
+                </div>
+            `;
 
-        container.appendChild(div);
+            container.appendChild(div);
+            console.log('Step added successfully');
+        } catch (error) {
+            console.error('Error in addStep:', error);
+            throw error;
+        }
     }
 
     saveCategory() {
@@ -1027,6 +1108,14 @@ class EstimationTool {
 }
 
 const app = new EstimationTool();
+
+// Debug function to reset data
+function resetData() {
+    if (confirm('This will clear all data and reset the application. Are you sure?')) {
+        localStorage.removeItem('estimationTool');
+        location.reload();
+    }
+}
 
 function login(userType) { app.login(userType); }
 function logout() { app.logout(); }
