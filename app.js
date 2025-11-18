@@ -1064,46 +1064,104 @@ class EstimationTool {
         const data = this.getData();
         const project = data.projects[projectId];
 
+        const totalEffectiveHours = project.totalEffectiveHours || project.totalHours;
+        const timeSaved = project.totalHours - totalEffectiveHours;
+
         content.innerHTML = `
             <h3>${project.name}</h3>
-            <p><strong>Total Estimate:</strong> ${project.totalHours} hours</p>
+            <div class="project-totals">
+                <p><strong>Base Estimate:</strong> ${project.totalHours} hours</p>
+                ${totalEffectiveHours !== project.totalHours ? `
+                    <p><strong>AI-Optimized Time:</strong> ${totalEffectiveHours} hours</p>
+                    <p class="time-saved"><strong>Time Saved:</strong> ${timeSaved.toFixed(1)} hours (${((timeSaved/project.totalHours)*100).toFixed(1)}%)</p>
+                ` : ''}
+            </div>
             <div style="margin-top: 2rem;">
-                ${project.lineItems.map((item, index) => `
+                ${project.lineItems.map((item, index) => {
+                    const effectiveHours = item.effectiveHours || item.estimatedHours;
+                    const resource = data.resources.find(r => r.id === item.assignedTo);
+                    return `
                     <div class="project-plan-item">
                         <div class="plan-item-header">
                             <h4>Task ${index + 1}: ${item.description || 'Untitled Task'}</h4>
-                            <span>${item.estimatedHours} hours</span>
-                        </div>
+                            <div class="task-hours">
+                                <span class="base-hours">${item.estimatedHours}h</span>
+                                ${effectiveHours !== item.estimatedHours ? `
+                                    <span class="effective-hours"> → ${effectiveHours.toFixed(1)}h</span>
+                                ` : ''}
+                            </div>
+                        </div>`;
+                }).join('')}
                         <div class="resource-assignment">
                             <label>Assigned to:</label>
                             <select onchange="app.updateResourceAssignment('${projectId}', ${index}, this.value)">
                                 <option value="">Select Resource</option>
-                                ${data.resources.map(resource => `
-                                    <option value="${resource.id}" ${item.assignedTo === resource.id ? 'selected' : ''}>
-                                        ${resource.name} (${resource.type === 'ai' ? 'AI' : 'Human'})
-                                    </option>
-                                `).join('')}
+                                <optgroup label="Human Resources">
+                                    ${data.resources.filter(r => r.type === 'human').map(resource => `
+                                        <option value="${resource.id}" ${item.assignedTo === resource.id ? 'selected' : ''}>
+                                            ${resource.name}
+                                        </option>
+                                    `).join('')}
+                                </optgroup>
+                                <optgroup label="AI Agents">
+                                    ${data.resources.filter(r => r.type === 'ai').map(resource => `
+                                        <option value="${resource.id}" ${item.assignedTo === resource.id ? 'selected' : ''}>
+                                            ${resource.name} (${(1-resource.efficiency)*100}% time reduction)
+                                        </option>
+                                    `).join('')}
+                                </optgroup>
                             </select>
+                            ${this.getResourceEfficiencyInfo(data, item.assignedTo)}
                         </div>
                         <div style="margin-top: 0.5rem; color: #7f8c8d;">
                             Category: ${data.categories[item.categoryId]?.name || 'Unknown'} | Size: ${item.storySize || 'Unknown'} | Complexity: ${item.complexity || 'Unknown'}
                             ${item.multiplier !== 1 ? ` | Multiplier: ${item.multiplier}` : ''}
                             ${item.overrideHours ? ' | Override Applied' : ''}
                         </div>
-                    </div>
-                `).join('')}
+                    </div>`;
+                }).join('')}
             </div>
         `;
     }
 
+    getResourceEfficiencyInfo(data, resourceId) {
+        if (!resourceId) return '';
+        const resource = data.resources.find(r => r.id === resourceId);
+        if (resource && resource.type === 'ai') {
+            return `<div class="efficiency-info">🤖 AI Efficiency: ${(1-resource.efficiency)*100}% faster</div>`;
+        }
+        return '';
+    }
+
+    calculateEffectiveHours(baseHours, resourceId) {
+        const data = this.getData();
+        const resource = data.resources.find(r => r.id === resourceId);
+        if (resource && resource.type === 'ai' && resource.efficiency) {
+            return baseHours * resource.efficiency;
+        }
+        return baseHours;
+    }
+
     updateResourceAssignment(projectId, lineItemIndex, resourceId) {
         const data = this.getData();
-        if (!data.projects[projectId].lineItems[lineItemIndex].assignedTo) {
-            data.projects[projectId].lineItems[lineItemIndex].assignedTo = resourceId;
-        } else {
-            data.projects[projectId].lineItems[lineItemIndex].assignedTo = resourceId;
-        }
+        data.projects[projectId].lineItems[lineItemIndex].assignedTo = resourceId;
+
+        // Recalculate effective hours with AI efficiency
+        const lineItem = data.projects[projectId].lineItems[lineItemIndex];
+        const baseHours = lineItem.estimatedHours;
+        const effectiveHours = this.calculateEffectiveHours(baseHours, resourceId);
+        lineItem.effectiveHours = effectiveHours;
+
+        // Update project total
+        const totalEffectiveHours = data.projects[projectId].lineItems.reduce((sum, item) => {
+            return sum + (item.effectiveHours || item.estimatedHours);
+        }, 0);
+        data.projects[projectId].totalEffectiveHours = parseFloat(totalEffectiveHours.toFixed(1));
+
         this.saveData(data);
+
+        // Refresh the project plan display
+        this.loadProjectPlan();
     }
 }
 
@@ -1115,6 +1173,194 @@ function resetData() {
         localStorage.removeItem('estimationTool');
         location.reload();
     }
+}
+
+// Function to update to new category structure
+function updateToNewStructure() {
+    if (confirm('This will update the categories to the new structure (Project Setup, Feature Development, Integration). Continue?')) {
+        localStorage.setItem('estimationTool', JSON.stringify(getNewInitialData()));
+        location.reload();
+    }
+}
+
+function getNewInitialData() {
+    return {
+        categories: {
+            'cat1': {
+                id: 'cat1',
+                name: 'Project Setup',
+                steps: [
+                    {
+                        name: 'Environment Setup',
+                        estimates: {
+                            'Small': { 'XS': 2, 'S': 4, 'M': 8, 'L': 12, 'XL': 16 },
+                            'Medium': { 'XS': 4, 'S': 8, 'M': 12, 'L': 16, 'XL': 24 },
+                            'Large': { 'XS': 6, 'S': 12, 'M': 16, 'L': 24, 'XL': 32 }
+                        }
+                    },
+                    {
+                        name: 'Initial Configuration',
+                        estimates: {
+                            'Small': { 'XS': 1, 'S': 2, 'M': 4, 'L': 6, 'XL': 8 },
+                            'Medium': { 'XS': 2, 'S': 4, 'M': 6, 'L': 8, 'XL': 12 },
+                            'Large': { 'XS': 3, 'S': 6, 'M': 8, 'L': 12, 'XL': 16 }
+                        }
+                    },
+                    {
+                        name: 'Repository Setup',
+                        estimates: {
+                            'Small': { 'XS': 1, 'S': 2, 'M': 3, 'L': 4, 'XL': 6 },
+                            'Medium': { 'XS': 2, 'S': 3, 'M': 4, 'L': 6, 'XL': 8 },
+                            'Large': { 'XS': 3, 'S': 4, 'M': 6, 'L': 8, 'XL': 12 }
+                        }
+                    },
+                    {
+                        name: 'Basic Scaffolding',
+                        estimates: {
+                            'Small': { 'XS': 2, 'S': 4, 'M': 6, 'L': 8, 'XL': 12 },
+                            'Medium': { 'XS': 4, 'S': 6, 'M': 8, 'L': 12, 'XL': 16 },
+                            'Large': { 'XS': 6, 'S': 8, 'M': 12, 'L': 16, 'XL': 24 }
+                        }
+                    },
+                    {
+                        name: 'Documentation Setup',
+                        estimates: {
+                            'Small': { 'XS': 1, 'S': 2, 'M': 3, 'L': 4, 'XL': 6 },
+                            'Medium': { 'XS': 2, 'S': 3, 'M': 4, 'L': 6, 'XL': 8 },
+                            'Large': { 'XS': 3, 'S': 4, 'M': 6, 'L': 8, 'XL': 12 }
+                        }
+                    }
+                ]
+            },
+            'cat2': {
+                id: 'cat2',
+                name: 'Feature Development',
+                steps: [
+                    {
+                        name: 'Analysis & Planning',
+                        estimates: {
+                            'Small': { 'XS': 2, 'S': 4, 'M': 8, 'L': 16, 'XL': 24 },
+                            'Medium': { 'XS': 4, 'S': 8, 'M': 12, 'L': 24, 'XL': 36 },
+                            'Large': { 'XS': 6, 'S': 12, 'M': 16, 'L': 32, 'XL': 48 }
+                        }
+                    },
+                    {
+                        name: 'Design (UI/UX, Architecture)',
+                        estimates: {
+                            'Small': { 'XS': 4, 'S': 8, 'M': 16, 'L': 24, 'XL': 32 },
+                            'Medium': { 'XS': 8, 'S': 16, 'M': 24, 'L': 36, 'XL': 48 },
+                            'Large': { 'XS': 12, 'S': 24, 'M': 32, 'L': 48, 'XL': 64 }
+                        }
+                    },
+                    {
+                        name: 'Implementation/Coding',
+                        estimates: {
+                            'Small': { 'XS': 8, 'S': 16, 'M': 32, 'L': 48, 'XL': 64 },
+                            'Medium': { 'XS': 16, 'S': 32, 'M': 48, 'L': 72, 'XL': 96 },
+                            'Large': { 'XS': 24, 'S': 48, 'M': 64, 'L': 96, 'XL': 128 }
+                        }
+                    },
+                    {
+                        name: 'Bug Fixing',
+                        estimates: {
+                            'Small': { 'XS': 2, 'S': 4, 'M': 8, 'L': 12, 'XL': 16 },
+                            'Medium': { 'XS': 4, 'S': 8, 'M': 12, 'L': 18, 'XL': 24 },
+                            'Large': { 'XS': 6, 'S': 12, 'M': 16, 'L': 24, 'XL': 32 }
+                        }
+                    },
+                    {
+                        name: 'Unit Testing',
+                        estimates: {
+                            'Small': { 'XS': 3, 'S': 6, 'M': 12, 'L': 18, 'XL': 24 },
+                            'Medium': { 'XS': 6, 'S': 12, 'M': 18, 'L': 27, 'XL': 36 },
+                            'Large': { 'XS': 9, 'S': 18, 'M': 24, 'L': 36, 'XL': 48 }
+                        }
+                    },
+                    {
+                        name: 'Code Review',
+                        estimates: {
+                            'Small': { 'XS': 2, 'S': 4, 'M': 6, 'L': 8, 'XL': 12 },
+                            'Medium': { 'XS': 3, 'S': 6, 'M': 9, 'L': 12, 'XL': 18 },
+                            'Large': { 'XS': 4, 'S': 8, 'M': 12, 'L': 16, 'XL': 24 }
+                        }
+                    }
+                ]
+            },
+            'cat3': {
+                id: 'cat3',
+                name: 'Integration',
+                steps: [
+                    {
+                        name: 'API Design/Setup',
+                        estimates: {
+                            'Small': { 'XS': 4, 'S': 8, 'M': 12, 'L': 16, 'XL': 24 },
+                            'Medium': { 'XS': 6, 'S': 12, 'M': 18, 'L': 24, 'XL': 36 },
+                            'Large': { 'XS': 8, 'S': 16, 'M': 24, 'L': 32, 'XL': 48 }
+                        }
+                    },
+                    {
+                        name: 'System Integration',
+                        estimates: {
+                            'Small': { 'XS': 8, 'S': 16, 'M': 24, 'L': 32, 'XL': 40 },
+                            'Medium': { 'XS': 12, 'S': 24, 'M': 36, 'L': 48, 'XL': 60 },
+                            'Large': { 'XS': 16, 'S': 32, 'M': 48, 'L': 64, 'XL': 80 }
+                        }
+                    },
+                    {
+                        name: 'End-to-end Testing',
+                        estimates: {
+                            'Small': { 'XS': 6, 'S': 12, 'M': 18, 'L': 24, 'XL': 30 },
+                            'Medium': { 'XS': 9, 'S': 18, 'M': 27, 'L': 36, 'XL': 45 },
+                            'Large': { 'XS': 12, 'S': 24, 'M': 36, 'L': 48, 'XL': 60 }
+                        }
+                    },
+                    {
+                        name: 'Performance Testing',
+                        estimates: {
+                            'Small': { 'XS': 4, 'S': 8, 'M': 12, 'L': 16, 'XL': 20 },
+                            'Medium': { 'XS': 6, 'S': 12, 'M': 18, 'L': 24, 'XL': 30 },
+                            'Large': { 'XS': 8, 'S': 16, 'M': 24, 'L': 32, 'XL': 40 }
+                        }
+                    },
+                    {
+                        name: 'Deployment',
+                        estimates: {
+                            'Small': { 'XS': 2, 'S': 4, 'M': 6, 'L': 8, 'XL': 12 },
+                            'Medium': { 'XS': 3, 'S': 6, 'M': 9, 'L': 12, 'XL': 18 },
+                            'Large': { 'XS': 4, 'S': 8, 'M': 12, 'L': 16, 'XL': 24 }
+                        }
+                    },
+                    {
+                        name: 'Documentation',
+                        estimates: {
+                            'Small': { 'XS': 2, 'S': 4, 'M': 6, 'L': 8, 'XL': 12 },
+                            'Medium': { 'XS': 3, 'S': 6, 'M': 9, 'L': 12, 'XL': 18 },
+                            'Large': { 'XS': 4, 'S': 8, 'M': 12, 'L': 16, 'XL': 24 }
+                        }
+                    }
+                ]
+            }
+        },
+        complexitySizes: ['XS', 'S', 'M', 'L', 'XL'],
+        storySizes: ['Small', 'Medium', 'Large'],
+        storyTypes: {},
+        projects: {},
+        users: [
+            { id: 'estimator', name: 'Estimator', role: 'estimator' },
+            { id: 'admin', name: 'Admin', role: 'admin' }
+        ],
+        resources: [
+            { id: 'senior_dev', name: 'Senior Developer', type: 'human', category: 'development' },
+            { id: 'junior_dev', name: 'Junior Developer', type: 'human', category: 'development' },
+            { id: 'devops_eng', name: 'DevOps Engineer', type: 'human', category: 'infrastructure' },
+            { id: 'designer', name: 'UI/UX Designer', type: 'human', category: 'design' },
+            { id: 'code_agent', name: 'Code Generation Agent', type: 'ai', category: 'development', efficiency: 0.3 },
+            { id: 'test_agent', name: 'Testing Agent', type: 'ai', category: 'testing', efficiency: 0.5 },
+            { id: 'doc_agent', name: 'Documentation Agent', type: 'ai', category: 'documentation', efficiency: 0.2 },
+            { id: 'review_agent', name: 'Code Review Agent', type: 'ai', category: 'review', efficiency: 0.4 },
+            { id: 'bug_agent', name: 'Bug Fix Agent', type: 'ai', category: 'debugging', efficiency: 0.4 }
+        ]
+    };
 }
 
 function login(userType) { app.login(userType); }

@@ -718,6 +718,52 @@ header h1 {
     border-left: 3px solid #3498db;
 }
 
+/* AI Efficiency Indicators */
+.efficiency-info {
+    font-size: 0.85rem;
+    color: #27ae60;
+    margin-top: 0.3rem;
+    font-weight: bold;
+}
+
+.project-totals {
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+    border-left: 4px solid #3498db;
+}
+
+.time-saved {
+    color: #27ae60 !important;
+    font-weight: bold;
+}
+
+.task-hours {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.base-hours {
+    color: #6c757d;
+}
+
+.effective-hours {
+    color: #27ae60;
+    font-weight: bold;
+}
+
+.resource-assignment select optgroup {
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.resource-assignment select option {
+    font-weight: normal;
+    padding: 0.3rem;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .login-options {
