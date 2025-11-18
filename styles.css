@@ -115,6 +115,21 @@ header h1 {
     background: #c0392b;
 }
 
+.clear-cache-btn {
+    background: #f39c12;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 3px;
+    cursor: pointer;
+    margin-right: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.clear-cache-btn:hover {
+    background: #e67e22;
+}
+
 /* Tab Navigation */
 .tab-navigation {
     background: #34495e;
@@ -829,4 +844,120 @@ header h1 {
         grid-template-columns: 1fr;
         gap: 0.5rem;
     }
+}
+
+/* Settings Tab */
+.settings-section {
+    display: grid;
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.settings-card {
+    background: white;
+    border-radius: 8px;
+    padding: 2rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-left: 4px solid #3498db;
+}
+
+.settings-card h3 {
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+    font-size: 1.4rem;
+}
+
+.settings-card p {
+    color: #7f8c8d;
+    margin-bottom: 1.5rem;
+}
+
+/* Complexity Sizes Manager */
+.complexity-sizes-manager {
+    display: grid;
+    gap: 1.5rem;
+}
+
+.current-sizes h4, .add-size-form h4 {
+    color: #2c3e50;
+    margin-bottom: 1rem;
+}
+
+.size-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.size-tag {
+    background: #3498db;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: bold;
+}
+
+.size-tag .remove-size {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    line-height: 1;
+}
+
+.size-tag .remove-size:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.add-size-controls {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.add-size-controls input {
+    padding: 0.8rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+    text-transform: uppercase;
+}
+
+/* Data Management */
+.data-management {
+    text-align: center;
+}
+
+.clear-cache-btn-large {
+    background: #e74c3c;
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    transition: background-color 0.2s;
+}
+
+.clear-cache-btn-large:hover {
+    background: #c0392b;
+}
+
+.warning-text {
+    color: #e67e22;
+    font-style: italic;
+    font-size: 0.9rem;
 }

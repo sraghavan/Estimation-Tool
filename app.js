@@ -553,6 +553,8 @@ class EstimationTool {
             this.renderProjects();
         } else if (tabName === 'project-plan') {
             this.populateProjectSelector();
+        } else if (tabName === 'settings') {
+            this.renderSettings();
         }
     }
 
@@ -1195,6 +1197,109 @@ class EstimationTool {
         // Refresh the project plan display
         this.loadProjectPlan();
     }
+
+    renderSettings() {
+        this.renderComplexitySizes();
+    }
+
+    renderComplexitySizes() {
+        const data = this.getData();
+        const container = document.getElementById('current-complexity-sizes');
+        container.innerHTML = '';
+
+        data.complexitySizes.forEach(size => {
+            const sizeTag = document.createElement('div');
+            sizeTag.className = 'size-tag';
+            sizeTag.innerHTML = `
+                <span>${size}</span>
+                ${data.complexitySizes.length > 2 ? `
+                    <button class="remove-size" onclick="app.removeComplexitySize('${size}')" title="Remove ${size}">
+                        ×
+                    </button>
+                ` : ''}
+            `;
+            container.appendChild(sizeTag);
+        });
+    }
+
+    addComplexitySize() {
+        const input = document.getElementById('new-size-input');
+        const newSize = input.value.trim().toUpperCase();
+
+        if (!newSize) {
+            alert('Please enter a size name');
+            return;
+        }
+
+        if (newSize.length > 5) {
+            alert('Size name must be 5 characters or less');
+            return;
+        }
+
+        const data = this.getData();
+
+        if (data.complexitySizes.includes(newSize)) {
+            alert('This size already exists');
+            return;
+        }
+
+        data.complexitySizes.push(newSize);
+
+        // Update all existing categories to include the new size
+        Object.values(data.categories).forEach(category => {
+            category.steps.forEach(step => {
+                Object.keys(step.estimates).forEach(storySize => {
+                    if (!step.estimates[storySize][newSize]) {
+                        step.estimates[storySize][newSize] = 0;
+                    }
+                });
+            });
+        });
+
+        this.saveData(data);
+        this.renderComplexitySizes();
+        input.value = '';
+
+        // Refresh estimation matrix if visible
+        if (document.getElementById('estimation-matrix').classList.contains('active')) {
+            this.renderCategories();
+        }
+
+        alert(`Size "${newSize}" added successfully!`);
+    }
+
+    removeComplexitySize(sizeToRemove) {
+        const data = this.getData();
+
+        if (data.complexitySizes.length <= 2) {
+            alert('Cannot remove size. Minimum 2 sizes required.');
+            return;
+        }
+
+        if (confirm(`Are you sure you want to remove "${sizeToRemove}"? This will delete all estimates for this complexity level.`)) {
+            // Remove from complexitySizes array
+            data.complexitySizes = data.complexitySizes.filter(size => size !== sizeToRemove);
+
+            // Remove from all categories
+            Object.values(data.categories).forEach(category => {
+                category.steps.forEach(step => {
+                    Object.keys(step.estimates).forEach(storySize => {
+                        delete step.estimates[storySize][sizeToRemove];
+                    });
+                });
+            });
+
+            this.saveData(data);
+            this.renderComplexitySizes();
+
+            // Refresh estimation matrix if visible
+            if (document.getElementById('estimation-matrix').classList.contains('active')) {
+                this.renderCategories();
+            }
+
+            alert(`Size "${sizeToRemove}" removed successfully!`);
+        }
+    }
 }
 
 const app = new EstimationTool();
@@ -1436,3 +1541,5 @@ function updateLineItemEstimate(element) { app.updateLineItemEstimate(element); 
 function saveProject() { app.saveProject(); }
 function cancelProject() { app.cancelProject(); }
 function loadProjectPlan() { app.loadProjectPlan(); }
+function addComplexitySize() { app.addComplexitySize(); }
+function removeComplexitySize(size) { app.removeComplexitySize(size); }

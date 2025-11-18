@@ -33,6 +33,7 @@
                 <h1>Project Estimation Tool</h1>
                 <div class="user-info">
                     <span id="current-user"></span>
+                    <button onclick="clearAllCache()" class="clear-cache-btn" title="Clear all data and reset to fresh structure">🧹 Clear Cache</button>
                     <button onclick="logout()" class="logout-btn">Logout</button>
                 </div>
             </header>
@@ -41,6 +42,7 @@
                 <button class="tab-btn active" onclick="showTab('estimation-matrix')">Estimation Matrix</button>
                 <button class="tab-btn" onclick="showTab('projects')">Projects</button>
                 <button class="tab-btn" onclick="showTab('project-plan')">Project Plan</button>
+                <button class="tab-btn" onclick="showTab('settings')">Settings</button>
             </nav>
 
             <!-- Estimation Matrix Tab -->
@@ -90,6 +92,49 @@
                 </div>
                 <div id="project-plan-content">
                     <!-- Project plan details will be shown here -->
+                </div>
+            </div>
+
+            <!-- Settings Tab -->
+            <div id="settings" class="tab-content">
+                <div class="section-header">
+                    <h2>Settings</h2>
+                </div>
+
+                <div class="settings-section">
+                    <div class="settings-card">
+                        <h3>🎛️ Complexity Sizes</h3>
+                        <p>Manage the complexity levels used in estimation grids (e.g., XS, S, M, L, XL)</p>
+
+                        <div class="complexity-sizes-manager">
+                            <div class="current-sizes">
+                                <h4>Current Sizes:</h4>
+                                <div id="current-complexity-sizes" class="size-tags">
+                                    <!-- Current sizes will be displayed here -->
+                                </div>
+                            </div>
+
+                            <div class="add-size-form">
+                                <h4>Add New Size:</h4>
+                                <div class="add-size-controls">
+                                    <input type="text" id="new-size-input" placeholder="Enter size (e.g., XXL, XXS)" maxlength="5">
+                                    <button onclick="addComplexitySize()" class="add-btn">Add Size</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="settings-card">
+                        <h3>📊 Data Management</h3>
+                        <p>Manage your application data and settings</p>
+
+                        <div class="data-management">
+                            <button onclick="clearAllCache()" class="clear-cache-btn-large">
+                                🧹 Clear All Data & Reset to Fresh Structure
+                            </button>
+                            <p class="warning-text">⚠️ This will remove all projects and reset categories to default structure</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
