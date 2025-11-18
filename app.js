@@ -463,7 +463,7 @@ class EstimationTool {
 
     bindEvents() {
         document.addEventListener('DOMContentLoaded', () => {
-            this.checkRoute();
+            this.initializeApp();
         });
 
         window.addEventListener('popstate', () => {
@@ -472,8 +472,21 @@ class EstimationTool {
     }
 
     initializeRouting() {
-        // Handle initial route
-        this.checkRoute();
+        // Handle initial route only if there's a hash
+        if (window.location.hash) {
+            this.checkRoute();
+        } else {
+            this.showLoginScreen();
+        }
+    }
+
+    initializeApp() {
+        // Show login screen by default
+        this.showLoginScreen();
+        // Only check route if there's actually a hash in URL
+        if (window.location.hash && window.location.hash.length > 1) {
+            this.checkRoute();
+        }
     }
 
     checkRoute() {
@@ -500,9 +513,14 @@ class EstimationTool {
     }
 
     showLoginScreen() {
-        document.getElementById('login-screen').classList.add('active');
-        document.getElementById('main-screen').classList.remove('active');
-        this.currentUser = null;
+        console.log('Showing login screen');
+        try {
+            document.getElementById('login-screen').classList.add('active');
+            document.getElementById('main-screen').classList.remove('active');
+            this.currentUser = null;
+        } catch (error) {
+            console.error('Error showing login screen:', error);
+        }
     }
 
     loginWithRoute(userType, tab) {
@@ -539,8 +557,23 @@ class EstimationTool {
     }
 
     login(userType) {
-        this.updateRoute(`app/${userType}/estimation-matrix`);
-        this.loginWithRoute(userType, 'estimation-matrix');
+        console.log('Login called with userType:', userType);
+        try {
+            this.currentUser = userType;
+            document.getElementById('current-user').textContent = userType.charAt(0).toUpperCase() + userType.slice(1);
+            document.getElementById('login-screen').classList.remove('active');
+            document.getElementById('main-screen').classList.add('active');
+
+            this.renderCategories();
+            this.renderProjects();
+            this.populateProjectSelector();
+
+            this.updateRoute(`app/${userType}/estimation-matrix`);
+            console.log('Login successful');
+        } catch (error) {
+            console.error('Login error:', error);
+            alert('Login failed: ' + error.message);
+        }
     }
 
     logout() {
