@@ -1207,6 +1207,29 @@ function resetData() {
     }
 }
 
+// Function to clear all cache and load fresh
+function clearAllCache() {
+    if (confirm('This will clear ALL data and reset to the fresh new structure (Project Setup, Feature Development, Integration). Continue?')) {
+        // Clear localStorage
+        localStorage.clear();
+
+        // Clear sessionStorage
+        sessionStorage.clear();
+
+        // Clear any other cached data
+        if ('caches' in window) {
+            caches.keys().then(names => {
+                names.forEach(name => {
+                    caches.delete(name);
+                });
+            });
+        }
+
+        // Force reload with cache clearing
+        location.reload(true);
+    }
+}
+
 // Function to update to new category structure
 function updateToNewStructure() {
     if (confirm('This will update the categories to the new structure (Project Setup, Feature Development, Integration). Continue?')) {
